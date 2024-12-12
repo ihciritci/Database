@@ -1,0 +1,208 @@
+###  phpmyadmin for mysql  ###
+
+
+
+##*------------installation---------------*##
+
+1- sudo apt install apache2 wget unzip  -y 
+
+sudo apt install php php-zip php-json php-mbstring php-mysql  -y
+      # edit /etc/hosts  file and add  <ipaddress FDQN >
+	  
+	  
+sudo ufw allow 'Apache'
+
+
+2- sudo systemctl enable apache2 
+      
+	
+#* /var/www/html/index.html  to change default response
+	  
+	  
+
+4- sudo apt install mysql-server  -y
+    
+	sudo lsof -i :80
+		ihc@u2204s:~$ sudo lsof -i :80
+			COMMAND   PID     USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+			apache2 10257     root    4u  IPv6  47064      0t0  TCP *:http (LISTEN)
+			apache2 10258 www-data    4u  IPv6  47064      0t0  TCP *:http (LISTEN)
+			apache2 10259 www-data    4u  IPv6  47064      0t0  TCP *:http (LISTEN)
+			apache2 10260 www-data    4u  IPv6  47064      0t0  TCP *:http (LISTEN)
+			apache2 10261 www-data    4u  IPv6  47064      0t0  TCP *:http (LISTEN)
+			apache2 10262 www-data    4u  IPv6  47064      0t0  TCP *:http (LISTEN)
+			apache2 10267 www-data    4u  IPv6  47064      0t0  TCP *:http (LISTEN)
+			
+		sudo kill -9 63057 63058
+		
+	    sudo nano /etc/apache2/ports.conf   # check apache conf fıle 
+		
+
+ * add root user to mysql-server
+ 
+5- sudo mysql_secure_installation
+
+sudo mysql
+
+mysql> 
+
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password by 'Asd.654321';
+
+
+6- install php
+
+
+sudo apt install php libapache2-mod-php php-mysql -y
+
+
+7- Configure Apache for PHP
+
+  # dir.conf file and edit it by moving the “index.php” phrase to the front of the line named “DirectoryIndex”.
+  
+  sudo nano /etc/apache2/mods-enabled/dir.conf
+
+8- Restart Apache
+
+sudo systemctl restart apache2
+
+
+9- Check if PHP is working
+
+
+sudo nano /var/www/html/abc.php
+
+< ?php
+echo "Hello to from ihc......via Ubuntu 22.04";
+?>
+
+
+10 - install PHPMyAdmin
+
+sudo apt install phpmyadmin -y
+
+sudo systemctl restart apache2
+
+ http://localhost/phpmyadmin
+ 
+ 
+
+xx10 - n error when you attempt to set a password for the phpmyadmin user:
+
+sudo mysql
+mysql -u root -p
+UNINSTALL COMPONENT "file://component_validate_password";
+exit
+
+sudo apt install phpmyadmin
+
+mysql -u root -p
+
+INSTALL COMPONENT "file://component_validate_password";
+
+sudo phpenmod mbstring
+
+sudo systemctl restart apache2
+
+
+
+
+sudo nano /etc/phpmyadmin/config.inc.php
+
+$cfg['Servers'][$i]['host'] = 'db_server';   # db_server = ip
+
+
+
+
+
+
+
+##################################################################################
+## MySQL operations ###
+
+sudo mysql -u root
+
+SELECT User, Host FROM mysql.user;
+
+CREATE USER 'yeni_kullanici'@'%' IDENTIFIED BY 'guclu_sifre';
+
+GRANT ALL PRIVILEGES ON *.* TO 'yeni_kullanici'@'%' WITH GRANT OPTION;
+
+FLUSH PRIVILEGES;
+
+SHOW GRANTS FOR 'yeni_kullanici'@'%';   #checking user  priviliges
+
+
+UPDATE mysql.user SET Grant_priv = 'Y' WHERE User = 'root' AND Host = 'localhost';
+FLUSH PRIVILEGES;
+
+CREATE USER 'root'@'%' IDENTIFIED BY 'your_password';
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+
+
+
+ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'Asd.654321';
+FLUSH PRIVILEGES;
+
+SELECT User, Host FROM mysql.user WHERE User = 'root';   # root user control
+
+
+mysql> SELECT User, Host FROM mysql.user WHERE User = 'root';
++------+-----------+
+| User | Host      |
++------+-----------+
+| root | localhost |
++------+-----------+
+1 row in set (0.00 sec)
+
+mysql> CREATE USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'Asd.654321';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> FLUSH PRIVILEGES;
+Query OK, 0 rows affected (0.00 sec)
+
+  
+ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY 'Asd.654321';
+FLUSH PRIVILEGES;
+  
+
+## Open remote connetions to mysql
+
+
+sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf  
+
+  bind-address = 0.0.0.0   # to allow remote connect
+  
+  sudo systemctl restart mysql
+
+
+sudo nano /etc/mysql/my.cnf  ##  ???
+
+
+
+#################################################################################################
+
+sudo apt update
+				# Preconfigure phpMyAdmin
+echo "phpmyadmin phpmyadmin/dbconfig-install boolean false" | sudo debconf-set-selections
+echo "phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2" | sudo debconf-set-selections
+
+sudo apt install php mysql-server phpmyadmin
+
+				# : Secure Your MySQL Installation
+				
+sudo mysql_secure_installation
+
+				# Configure MySQL User Authentication
+				
+sudo mysql
+alter user 'root'@'localhost' identified with mysql_native_password by 'P@55word';
+alter user 'root'@'%' identified with mysql_native_password by 'P@55word';
+exit
+
+
+
+
