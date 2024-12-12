@@ -1,0 +1,28 @@
+
+sudo -u postgres psql
+
+CREATE ROLE zadmin WITH LOGIN PASSWORD 'güçlü_bir_şifre';    # creat'ng new user
+
+GRANT CONNECT ON DATABASE odoo_db TO zadmin;                # assing to a DB
+
+
+\c odoo_db          # connect to DB
+
+GRANT USAGE ON SCHEMA public TO zadmin;    # assaing all priviliges to user
+
+
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO zadmin;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO zadmin;
+GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public TO zadmin;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO zadmin;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO zadmin;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON FUNCTIONS TO zadmin;
+
+GRANT odoo TO zadmin;
+
+
+\q
+
+                # to check 
+psql -U zadmin -d odoo_db -h localhost

@@ -1,0 +1,28 @@
+
+sudo -u postgres psql
+
+psql > ALTER USER postgres WITH PASSWORD 'strong_password';
+psql > exit
+
+
+
+sudo nano /etc/postgresql/16/main/pg_hba.conf
+                     # Change the peer value to password to enable password authentication on the PostgreSQL database server.
+local   all             postgres                                password
+                     # local   all             all                                     trust
+                     # for ıpv4 remote logın with password
+
+host    all             all             0.0.0.0/0        md5
+                  
+
+
+
+ sudo systemctl restart postgresql
+
+ psql > CREATE ROLE db_manager WITH LOGIN PASSWORD 'strong-password';
+ psql > GRANT ALL PRIVILEGES ON DATABASE hospital TO db_manager;
+ psql > exit
+                      # as the new user db_manager user to test access to the hospital database.
+ psql > psql -h localhost -U db_manager -d hospital
+
+

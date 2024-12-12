@@ -1,0 +1,128 @@
+
+# ----------------------------------------------------------------------------------------------------------------------#
+# https://www.postgresqltutorial.com/postgresql-getting-started/install-postgresql-linux/
+
+curl -O https://www.postgresqltutorial.com/wp-content/uploads/2019/05/dvdrental.zip
+
+unzip dvdrental.zip
+sudo -u postgres psql
+
+create database dvdrental;
+\q    # quit the psql by using the \q command:
+
+pg_restore -U postgres --dbname=dvdrental --verbose dvdrental.tar
+
+psql
+\c dvdrental
+
+select count(*) from film;
+         count
+        -------
+        1000
+        (1 row)
+
+# ----------------------------------------------------------------------------------------------------------------------#
+
+$ postgresql-12-setup initdb      # initialize the db and enable automatic start is important - advice1   
+$ sudo systemctl start postgresql
+$ sudo systemctl enable postgresql
+
+# From DG----------------------------------------------------------------------------------------------------------------------#
+# conf hugepages.... 
+
+head -n 1 postmaster.pid
+
+ps -ef | grep postmaster
+  postgres 2879 ..xx..xx ......
+
+grep ^VmPeak /proc/2879/status
+VmPeak: 8965216 KB
+
+grep ^Hugepagesize /proc/meminfo
+Hugepagesize : 2048 KB
+
+# PgSQL needs (Vmpeak/Hugepagesize) piece of Hugepagesize
+nano /etc/tuned/gbd/tuned.conf
+
+transparent_hugepages=never #  this params turn off
+
+vm.nr_hugepage=4377   # as a root save
+
+tuned-adm profile   # ***** study on this
+             #  output last line is ...  Current active profile: virtual-guest 
+
+tuned-adm profile gbd     # gbd is a capital of a tech consultancy company nt a command
+
+
+
+#  from DG----------------------------------------------------------------------------------------------------------------------#
+# how to learn that Which query use how many size of ram/cahche
+# pg_bufferchache
+
+create extension pg_bufferchache;
+
+select c.realname, count(*) as buffers from pg_bufferchache b inner joın pg_class c
+on b.relfilenode= pg_relation_filenode(c.oid) and b.reldatabase in (0, select oid from pg_database where datname= current_database()))
+group by c.realname order by 2 desc 
+LIMIT 10;
+
+
+
+
+
+#----------------------------------------------------------------------------------------------------------------------#
+# sample calculation1 s     :::: E-MultiSkills Database  services
+max_connections = 100
+shared_buffers = 128 MB
+
+max_connections = 200
+shared_buffers = 256 MB
+
+kernel.shmmax   # max bytes of shared memory that can be allocate from RAM at kernel level
+               # this can be equal or more than shared_buffers
+
+# if ....ram on OS = 16 GB  ... verify existing value ...... cat /proc/sys/kernel/shmax
+
+kernel.shmmax = 10066329600 (10 GB)
+
+
+select * from 
+(slect count(*) used from pg_stat_activity ) query_1,
+(select setting::int res_for_super from pg_settings where name = $$superuser_reserved_connections$$) query_2,
+(select setting::int max_conn from pg_settingswhere name=$$max_connections$$) query_3;
+
+
+select sum(numbackends) from pg_stat_database;
+
+# for sample calc web sites  pgtune.leopard.in.ua
+
+
+
+
+
+
+
+
+
+
+# ----------------------------------------------------------------------------------------------------------------------#
+
+# ----------------------------------------------------------------------------------------------------------------------#
+
+# ----------------------------------------------------------------------------------------------------------------------#
+
+# ----------------------------------------------------------------------------------------------------------------------#
+
+# ----------------------------------------------------------------------------------------------------------------------#
+
+# ----------------------------------------------------------------------------------------------------------------------#
+
+# ----------------------------------------------------------------------------------------------------------------------#
+
+# ----------------------------------------------------------------------------------------------------------------------#
+
+# ----------------------------------------------------------------------------------------------------------------------#
+
+
+# ----------------------------------------------------------------------------------------------------------------------#
+
