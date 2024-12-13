@@ -1,0 +1,41 @@
+## MySQL  Remote Connection ##
+
+sudo apt update && sudo apt upgrade -y
+
+
+sudo apt install mysql-server -y
+
+sudo systemctl enable mysql
+sudo systemctl start mysql
+
+sudo mysql_secure_installation  #  y , 2, <NewPassword> <Newpassword>, 
+
+mysql -uroot -p
+
+CREATE USER 'username'@'localhost' IDENTIFIED BY 'password';   # only localhost
+CREATE USER 'user'@'remote_server_ip' IDENTIFIED BY 'password'; # only one remote ip
+CREATE USER 'user'@'%' IDENTIFIED BY 'password';                # All remote ip
+
+CREATE USER 'user'@'remote_server_ip' IDENTIFIED WITH mysql_native_password BY 'password';
+
+GRANT ALL PRIVILEGES ON *.* TO 'greencloud'@'localhost' WITH GRANT OPTION;
+
+FLUSH PRIVILEGES;
+mysql> exit
+
+#**************************#Access mysqld.cnf File
+
+sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
+
+#*****  Change Bind-Address IP   ****#The current default IP is set to 127.0.0.1. This IP limits MySQL connections to the local machine.
+
+
+bind-address  0.0.0.0  #any machine that reaches the MySQL server can also connect with it.
+
+
+sudo systemctl restart mysql
+
+
+sudo ufw allow from remote_ip_address to any port 3306
+
+sudo ufw allow 3306
