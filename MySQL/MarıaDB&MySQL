@@ -1,0 +1,19 @@
+####################  MariaDB   on MySQL   #############################
+
+
+MySQL:
+		ALTER USER 'user'@'remote_server_ip' IDENTIFIED WITH mysql_native_password BY 'new_password';
+
+MariaDB: 
+		CREATE USER 'user'@'%' IDENTIFIED VIA mysql_native_password USING PASSWORD('');
+
+
+		ALTER USER 'user'@'remote_server_ip' IDENTIFIED VIA mysql_native_password USING PASSWORD('new_password');
+		
+		ALTER USER 'mysql'@'%' IDENTIFIED VIA mysql_native_password USING PASSWORD('QweAsd.321');
+		
+				
+		GRANT ALL PRIVILEGES ON *.* TO 'user'@'%';
+		GRANT ALL PRIVILEGES ON *.* TO 'mysql'@'%';
+		
+		FLUSH PRIVILEGES;
