@@ -1,1 +1,26 @@
-****
+****my.cnf (Linux) or my.ini (ın windows)
+
+
+* innodb_buffer_pool_size     # %25 of RAM ....
+
+* max_connections             # 100 but you can change according to connection max ecxpectations
+
+
+
+# query_cache_size (Deprecated - MySQL 8)
+
+
+* tmp_table_size and  max_heap_table_size   
+                tmp_table_size    = 16M     max_heap_table_size = 16M    
+
+   4 GB RAM :   tmp_table_size    = 64M,    max_heap_table_size = 64M
+  16+ GB RAM:   tmp_table_size    = 256M,   max_heap_table_size = 256M
+
+
+
+* innodb_log_file_size    (Default 50M)
+
+        HDD, 500 GB disk:   innodb_log_file_size = 128M
+        SSD, 1 TB disk  :   innodb_log_file_size = 512M
+
+* 
