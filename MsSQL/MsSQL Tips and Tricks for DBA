@@ -1,0 +1,98 @@
+1. Kurulum Esnasında Yapılacaklar
+Windows ve Linux Ortak Ayarlar:
+Disk Yapılandırması:
+
+Veritabanı dosyaları (MDF), transaction log dosyaları (LDF) ve TempDB farklı disklerde tutulmalıdır.
+SSD kullanımı performansı artırır.
+Disk RAID yapılandırması:
+RAID 1: Log dosyaları için.
+RAID 10: Veritabanı dosyaları için.
+CPU Ayarları:
+
+CPU kullanımı MAXDOP (Maximum Degree of Parallelism) ayarıyla optimize edilmelidir.
+Önerilen:
+Fiziksel CPU sayısı 8'den küçükse: MAXDOP = 2
+Fiziksel CPU sayısı 8 veya üzeri ise: MAXDOP = 4
+RAM Ayarları:
+
+SQL Server'e ayrılacak maksimum bellek (max server memory) ayarlanmalıdır.
+Örnek:
+16 GB RAM: max server memory = 12GB
+64 GB RAM: max server memory = 50GB
+TempDB Ayarları:
+
+TempDB için en az fiziksel çekirdek sayısı kadar ayrı dosya oluşturulmalı.
+TempDB ayrı bir hızlı diskte olmalıdır.
+2. Konfigürasyon Dosyaları ve Ayarları
+Windows ve Linux Ortamında Konfigürasyon Yolları:
+Windows: SQL Server Management Studio (SSMS) kullanarak GUI üzerinden ayarlar yapılabilir.
+Linux: mssql.conf dosyası kullanılır.
+Yol: /var/opt/mssql/mssql.conf
+Konfigürasyon: sudo /opt/mssql/bin/mssql-conf set <parametre> <değer>
+2.1. MAXDOP (Maximum Degree of Parallelism)
+Ne İşe Yarar:
+Sorguların paralel iş parçacığı kullanma sınırını belirler.
+Windows Ayarı:
+SSMS > Server Properties > Advanced > Max Degree of Parallelism.
+Linux Ayarı:
+bash
+Copy code
+sudo /opt/mssql/bin/mssql-conf set max degree of parallelism <değer>
+Önerilen:
+4 çekirdek: MAXDOP = 2
+8 çekirdek: MAXDOP = 4
+2.2. max server memory
+Ne İşe Yarar:
+SQL Server'in kullanabileceği maksimum bellek miktarını sınırlar.
+Windows Ayarı:
+SSMS > Server Properties > Memory > Maximum server memory (MB).
+Linux Ayarı:
+bash
+Copy code
+sudo /opt/mssql/bin/mssql-conf set memory.memorylimitmb <değer>
+Önerilen:
+Toplam RAM'in yaklaşık %75-85'i SQL Server'e ayrılır.
+Örnek:
+16 GB RAM: max server memory = 12GB
+32 GB RAM: max server memory = 26GB
+2.3. TempDB
+Ne İşe Yarar:
+Geçici veri saklama alanıdır, sorgu performansını doğrudan etkiler.
+Yapılacaklar:
+Ayrı disk kullanın.
+Çekirdek sayısı kadar dosya oluşturun.
+Linux Ayarı:
+bash
+Copy code
+sudo /opt/mssql/bin/mssql-conf set tempdbfilecount <çekirdek_sayısı>
+Önerilen:
+8 çekirdek: tempdbfilecount = 8
+2.4. log pool size
+Ne İşe Yarar:
+Transaction log performansını artırmak için ayarlanır.
+Linux Ayarı:
+bash
+Copy code
+sudo /opt/mssql/bin/mssql-conf set logpoolsize <boyut_MB>
+Örnek:
+1 GB ayrılabilir: logpoolsize = 1024
+2.5. File Growth (Otomatik Dosya Büyümesi)
+Ne İşe Yarar:
+Veritabanı veya log dosyalarının büyüme davranışını kontrol eder.
+Öneri:
+Sabit büyüme miktarı ayarlayın (örneğin, 512 MB).
+Yüzdesel büyüme performansı düşürür.
+3. Performanslı Örnek Konfigürasyonlar
+Küçük Sistem (4 CPU, 16 GB RAM, SSD)
+Windows:
+
+Max Server Memory: 12GB
+MAXDOP: 2
+TempDB Dosya Sayısı: 4
+Linux:
+
+bash
+Copy code
+sudo /opt/mssql/bin/mssql-conf set max degree of parallelism 2
+sudo /opt/mssql/bin/mssql-conf set memory.memorylimitmb 12288
+sudo /opt/mssql/bin/mssql-conf set tempdbfilecount 4
