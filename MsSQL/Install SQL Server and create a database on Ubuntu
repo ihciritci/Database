@@ -1,12 +1,31 @@
 ****Install SQL Server and create a database on Ubuntu**** https://learn.microsoft.com/en-us/sql/linux/quickstart-install-connect-ubuntu?view=sql-server-ver16&tabs=ubuntu2204  **
 
 
-# You can configure SQL Server on Linux with mssql-conf, using the following command:
 
-sudo /opt/mssql/bin/mssql-conf setup
+######** Prerequisites  **########
 
-#** Prerequisites  **#
 **** must have an Ubuntu 20.04 machine with at least 2 GB of memory.  ***
+**** Windows Subsystem for Linux isn't supported as an installation target for SQL Server.
 
+########### ** installation ** #######################
+**22.04**
+
+* curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | sudo gpg --dearmor -o /usr/share/keyrings/microsoft-prod.gpg
+  (or ıf warning )
+  curl https://packages.microsoft.com/keys/microsoft.asc | sudo tee /etc/apt/trusted.gpg.d/microsoft.asc
+
+*  curl -fsSL https://packages.microsoft.com/config/ubuntu/22.04/mssql-server-2022.list | sudo tee /etc/apt/sources.list.d/mssql-server-2022.list
+
+
+* sudo apt-get update
+* sudo apt-get install -y mssql-server
+
+
+# After installation
+
+* sudo /opt/mssql/bin/mssql-conf setup     # Default password policy must be at least eight characters long and contain characters from three of the following four sets: 
+                                           # uppercase letters, lowercase letters,
+
+* systemctl status mssql-server --no-pager
 
 
