@@ -10,7 +10,12 @@
 - At least 2 GB of disk space.
 - At least 2 GB of RAM.
 - System requirements for SQL Server on Linux
-        * 
+            * Memory	2 GB 
+            * File System	XFS or EXT4 (other file systems, such as BTRFS, aren't supported)
+            * Disk space	6 GB
+            * Processor speed	2 GHz
+            * Processor cores	2 cores
+            * Processor type	x64-compatible only
 
 ########################################################################################################
 
