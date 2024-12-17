@@ -1,4 +1,12 @@
-****my.cnf (Linux) or my.ini (ın windows)
+SHOW VARIABLES LIKE 'innodb_buffer_pool_size';
+SHOW STATUS LIKE 'Connections';
+
+**************************************************************************************************************
+
+MySQL Tuning Scripts:   mysqltuner.pl or  tuning-primer.sh     # to optimize 
+
+
+*******************my.cnf (Linux) or my.ini (ın windows)********************************************************
 
 
 * innodb_buffer_pool_size     # %25 of RAM ....
