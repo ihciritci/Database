@@ -1,0 +1,6 @@
+* SELECT * FROM pg_stat_activity;    # to watch performans 
+
+
+
+* EXPLAIN ANALYZE: Sorgu performansını analiz eder.
+* pgAdmin: Yönetim ve analiz aracı
