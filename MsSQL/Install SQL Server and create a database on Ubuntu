@@ -29,3 +29,41 @@
 * systemctl status mssql-server --no-pager
 
 
+
+
+############ ** Install the SQL Server command-line tools ** ###################
+
+*  curl https://packages.microsoft.com/keys/microsoft.asc | sudo tee /etc/apt/trusted.gpg.d/microsoft.asc
+
+*  curl https://packages.microsoft.com/config/ubuntu/22.04/prod.list | sudo tee /etc/apt/sources.list.d/mssql-release.list
+
+*  sudo apt-get update
+*  sudo apt-get install mssql-tools18 unixodbc-dev
+       
+    #  update to the latest version of mssql-tool
+
+* sudo apt-get update  
+* sudo apt-get install mssql-tools18
+
+
+
+******  Add /opt/mssql-tools18/bin/ to your PATH environment variable in a bash shell.  ***
+
+echo 'export PATH="$PATH:/opt/mssql-tools18/bin"' >> ~/.bash_profile
+source ~/.bash_profile
+
+echo 'export PATH="$PATH:/opt/mssql-tools18/bin"' >> ~/.bashrc
+source ~/.bashrc
+
+
+### Connect Locally ####
+
+sqlcmd -S localhost -U sa -P '<password>'     # SQL Server name (-S), the user name (-U), and the password (-P)
+                                              # to connect remotely, specify the machine name or IP address for the -S parameter, and port 1433 is open on your firewall.
+          
+
+
+
+
+
+
