@@ -23,4 +23,6 @@
         HDD, 500 GB disk:   innodb_log_file_size = 128M
         SSD, 1 TB disk  :   innodb_log_file_size = 512M
 
-* 
+* innodb_flush_log_at_trx_commit     (Default 1 .. writes to disk after per process)
+      # to take more performance 
+     innodb_flush_log_at_trx_commit = 2    (writes data to disk more late but it is data lost risk )
