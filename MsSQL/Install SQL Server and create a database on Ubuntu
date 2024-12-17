@@ -1,0 +1,12 @@
+****Install SQL Server and create a database on Ubuntu**** https://learn.microsoft.com/en-us/sql/linux/quickstart-install-connect-ubuntu?view=sql-server-ver16&tabs=ubuntu2204  **
+
+
+# You can configure SQL Server on Linux with mssql-conf, using the following command:
+
+sudo /opt/mssql/bin/mssql-conf setup
+
+#** Prerequisites  **#
+**** must have an Ubuntu 20.04 machine with at least 2 GB of memory.  ***
+
+
+
