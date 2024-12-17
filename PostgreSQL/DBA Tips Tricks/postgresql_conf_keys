@@ -33,6 +33,7 @@ shared_buffers =  8GB               #********* default 128 MB ........mın 128k 
                                     # when OS Ram size is not bigger then 64 GB and if so.... you must decide it to IO and process size after monitoring DB.
                                     # Writing IO is bigger than shared_buffers size must lower but Reading IO is bigger than it size must bigger.
                                     # ---- changes requires restart
+                                    # %25-40
 
 huge_pages = try                    # on,off,try options..... ---- changes requires restart......on DWH operation  or Reading  when you set this ... performance ups ... 
                                     # activating this params ... pgsql uses os*linux sames options  .. we must conf this params from tunning conf.... tuned.conf
@@ -44,11 +45,19 @@ work_mem = 4 MB                     # ********* default ıs 4MB..mın 64 kb.....
                                     #  if  At the same time / simultaneously query count is 100  and work_mem is 4 MB , postgresql use 100*4 MB=400 MB....
                                     # Os ram = 16 GB ,, Simultaneusly queries count 50 ,, %25 x Os Ram = 16x0.25 = 4 GB ....4 GB / 50 = 82 Mb  .. 
                                     # in this example : according to params work_mem must 82 Mb 
+                                    # use different for each query.. so Sum of Ram usage on multi query at same time
+
 
 
 maintenance_work_mem = 1 GB         # default ıs 64 mb..mın 4 mb......... Max 1 GB ... it does not use bigger than 1 gb so pgsql's source codes
-autovacuum_work_mem = -1            # default is -1 ..mın 1 mb or -1..... 
+                                    # For maintenence time
+                                    #  Samples: 4 GB RAM: maintenance_work_mem = 128MB // 16 GB RAM: maintenance_work_mem = 512MB // 64 GB RAM: maintenance_work_mem = 1GB
+
  
+autovacuum_work_mem = -1            # default is -1 ..mın 1 mb or -1.....  Samples:  autovacuum_work_mem = 128MB
+
+autovacuum                          # Use To clean and arrange tables .. conf with autovacuum_work_mem...
+                                      
 temp_file_limit = -1                # limits per-process temp file space
 
 max_files_per_process = 1000 
@@ -88,7 +97,8 @@ wal_compression = off                  # enables compression of full-page writes
                                         # off, pglz, lz4, zstd, or on
 
 
-wal_buffers = 64MB                       # min 32kB, -1 sets based on shared_buffers    -1 mesans 1/32  ...
+wal_buffers = 64MB                      # min 32kB, -1 sets based on shared_buffers    -1 mesans 1/32  ... #
+                                        # increase for Disk  write performance     Sample: 16 GB RAM: wal_buffers = 64MB  //  64 GB RAM: wal_buffers = 256MB
                                         # (change requires restart)
 
 
@@ -100,7 +110,11 @@ checkpoint_completion_target = 0.9     # checkpoint target duration, 0.0 - 1.0
 seq_page_cost = 1.0                    # measured on an arbitrary scale.... default 1
 random_page_cost = 4.0                 # same scale as above..... default 4   ..recommend 1ç5
 
-effective_cache_size = 8GB             # default is 4GB but recommend is Os Ram size %50
+effective_cache_size = 8GB             # default is 4GB but recommend is Os Ram size %50-75
+                                       # 4 GB RAM: effective_cache_size = 2GB //  16 GB RAM: effective_cache_size = 8GB // 64 GB RAM: effective_cache_size = 48GB
+
+
+
 
 
 
