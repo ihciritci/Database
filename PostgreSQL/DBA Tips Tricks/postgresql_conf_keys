@@ -57,6 +57,7 @@ maintenance_work_mem = 1 GB         # default ıs 64 mb..mın 4 mb......... Max 
 autovacuum_work_mem = -1            # default is -1 ..mın 1 mb or -1.....  Samples:  autovacuum_work_mem = 128MB
 
 autovacuum                          # Use To clean and arrange tables .. conf with autovacuum_work_mem...
+                                    # autovacuum = on
                                       
 temp_file_limit = -1                # limits per-process temp file space
 
