@@ -1,0 +1,92 @@
+#!/bin/bash
+
+# -------------------------
+# Config
+# -------------------------
+BACKUP_DIR="/PsqlDbBackups"   # Yedeklerin saklanacağı klasör
+DB_USER="osadmin"                   # PostgreSQL kullanıcı adı
+DB_HOST="localhost"                  # DB host
+DB_PORT="5432"                       # DB port
+RETENTION_DAYS=7                     # Kaç gün saklanacak
+
+
+# -------------------------
+# Tüm DB isimlerini al
+# -------------------------
+DATABASES=$(psql -U "$DB_USER" -h "$DB_HOST" -p "$DB_PORT" -d postgres -Atc "SELECT datname FROM pg_database WHERE datistemplate = false;")
+
+# -------------------------
+# Her DB için backup al
+# -------------------------
+for DB in $DATABASES; do
+    DATE=$(date +'%Y-%m-%d')
+    FILENAME="${DB}_backup_${DATE}.sql"
+    echo ">>> Backing up database: $DB"
+    
+    pg_dump -U "$DB_USER" -h "$DB_HOST" -p "$DB_PORT" "$DB" > "$BACKUP_DIR/$FILENAME"
+
+    if [ $? -eq 0 ]; then
+        echo "Backup successful: $BACKUP_DIR/$FILENAME"
+    else
+        echo "Backup failed for database: $DB"
+    fi
+done
+
+# -------------------------
+# Eski yedekleri sil (7 günden eski)
+# -------------------------
+echo ">>> Cleaning up backups older than $RETENTION_DAYS days..."
+find "$BACKUP_DIR" -type f -name "*_backup_*.sql" -mtime +$RETENTION_DAYS -exec rm -f {} \;
+
+echo "All backups finished."
+
+
+# chmod +x /usr/local/bin/pg_backup_per_db.sh
+# crontab -e
+# 0 2 * * * /home/osadmin/PgSQL_DB_backupShell.sh >> pg_backup.log 2>&1
+
+# sudo tee /root/.pgpass > /dev/null <<'EOF'
+# localhost:5432:*:postgres:SuperSecretPassword
+# EOF
+
+# sudo chmod 600 /root/.pgpass
+# sudo chown root:root /root/.pgpass
+# ALTER USER postgres WITH PASSWORD 'YourPostgresPassword';
+\q
+
+
+# host    all             all             127.0.0.1/32            md5
+# sudo systemctl restart postgresql
+
+# psql -U osadmin -d postgres -h localhost -c '\l'
+
+#!/bin/bash
+# PostgreSQL DB’lerini ayrı ayrı yedekleme scripti
+# Son 7 günü saklar, eski yedekleri siler
+
+BACKUP_DIR="/home/osadmin/pg_backups"
+DATE=$(date +"%Y-%m-%d")
+
+mkdir -p "$BACKUP_DIR"
+
+# Tüm veritabanlarını al (template0 ve template1 hariç)
+DBS=$(psql -U postgres -h localhost -t -c "SELECT datname FROM pg_database WHERE datistemplate = false;")
+
+for DB in $DBS; do
+    DB_DIR="$BACKUP_DIR/$DB"
+    mkdir -p "$DB_DIR"
+    
+    BACKUP_FILE="$DB_DIR/${DB}_${DATE}.sql.gz"
+    
+    echo "Backing up database: $DB"
+    
+    pg_dump -U postgres -h localhost "$DB" | gzip > "$BACKUP_FILE"
+    
+    # Son 7 gün dışındaki yedekleri sil
+    find "$DB_DIR" -type f -name "*.sql.gz" -mtime +6 -exec rm -f {} \;
+done
+
+echo "Backup completed: $(date)"
+
+# sudo chown -R osadmin:osadmin /PsqlDbBackups
+# sudo chmod 700 /PsqlDbBackups
